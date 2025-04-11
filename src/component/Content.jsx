@@ -2,6 +2,8 @@ import data from "../data/data.json";
 // import dataTable  from "../data/dataTable.json";
 import { useState } from "react";
 import Modal from "../modal/Modal";
+import DataTable from 'react-data-table-component';
+import dataList from "../data/dataTable.json";
 // import { useTable } from "../context/TableAPI";
 
 const Content = () => {
@@ -20,13 +22,62 @@ const Content = () => {
   const setindexNull = () => {
     setIndex(null);
   }
+  const columns = [
+    {
+      name: "CUSTOMER NAME",
+      cell: row => (
+        <>
+          <img src={row.avatar} alt={row.name} style={{ width: 32, marginRight: 8 }} />
+          {row.name}
+        </>
+      )
+    },
+    { name: "COMPANY", selector: row => row.company },
+    { name: "ORDER VALUE", selector: row => row.odervalue },
+    { name: "ORDER DATE", selector: row => row.orderdate },
+    { name: "STATUS", selector: row => row.status },
+    {
+      name: "UPDATE",
+      cell: (row, index) => (
+        <img
+          src={row.image}
+          alt=""
+        // style={{ width: "24px", cursor: "pointer" }}
+        // // onClick={() => HandleEdit(index)}
+        />
+      )
+    }
+  ];
+  const dataTB = dataList;
+  console.log(dataTB);
+  const customStyles = {
+    headRow: {
+      style: {
+        backgroundColor: '#eaf3fe',
+        color: '#000',
+        fontWeight: 'bold',
+        borderBottom: '1px solid #ccc',
+      },
+    },
+    headCells: {
+      style: {
+        justifyContent: 'center', // canh giữa tiêu đề
+      },
+    },
+    cells: {
+      style: {
+        justifyContent: 'center', // canh giữa nội dung ô
+      },
+    },
+  };
 
-  const HandleEdit = (index) => {
-    setUser(dataTB[index]);
-    setIndex(index);
-    setIsModalOpen(true);
 
-  }
+  // const HandleEdit = (index) => {
+  //   setUser(dataTB[index]);
+  //   setIndex(index);
+  //   setIsModalOpen(true);
+
+  // }
 
 
   return (
@@ -63,6 +114,20 @@ const Content = () => {
           <button className="rounded border-1 border-pink-400 p-1 text-pink-400" onClick={openModal}>Add User</button>
         </div>
       </div>
+      <DataTable
+        columns={columns}
+        data={dataList}
+        selectableRows
+        pagination
+        fixedHeader
+        paginationComponentOptions={{
+          rowsPerPageText: "",
+          rangeSeparatorText: "of",
+          selectAllRowsItem: false,
+        }}
+        customStyles={customStyles}
+      />
+
 
       <Modal isOpen={isModalOpen} closeModal={closeModal} editIndex={index} Edituser={user} setIndex={setindexNull} />
 
