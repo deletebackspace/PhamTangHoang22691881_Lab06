@@ -2,8 +2,7 @@ import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   const navLinkClass = ({ isActive }) =>
-    `flex items-center p-2 rounded font-bold no-underline w-full ${
-      isActive ? "bg-pink-500 text-white" : "bg-gray-100 text-black"
+    `flex items-center p-2 rounded font-bold no-underline w-full ${isActive ? "bg-pink-500 text-white" : "bg-gray-100 text-black"
     }`;
 
   return (
@@ -60,7 +59,7 @@ const Sidebar = () => {
           <img src="./Group.png" alt="" />
           <h5 className="font-bold">V2.0 is available</h5>
           <br />
-          <button className="border border-blue-500 rounded w-[150px] font-bold text-blue-600 p-1 bg-white">
+          <button className="border border-blue-500 rounded w-[120px] font-bold text-blue-600 p-1 bg-white">
             Try now
           </button>
         </div>
