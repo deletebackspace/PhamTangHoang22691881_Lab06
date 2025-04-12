@@ -1,0 +1,54 @@
+{
+  "dataTable": [
+    {
+      "id": "1",
+      "avatar": "./Avatar 313.png",
+      "name": "Phạm Tăng Hoàng",
+      "company": "Đa cấp số lượng số 1",
+      "odervalue": "$539",
+      "orderdate": "10/07/2023",
+      "status": "Completed",
+      "image": "./Pie chart.png"
+    },
+    {
+      "id": "2",
+      "avatar": "./user.png",
+      "name": "Carlos Garciae",
+      "company": "SmoozeShift",
+      "odervalue": "$747",
+      "orderdate": "24/07/2023",
+      "status": "New",
+      "image": "./Pie chart.png"
+    },
+    {
+      "id": "3",
+      "avatar": "./woman.png",
+      "name": "Elizabeth LBayli",
+      "company": "Prime Time Telecom",
+      "odervalue": "$564",
+      "orderdate": "11/07/2022",
+      "status": "In-progress",
+      "image": "./Pie chart.png"
+    },
+    {
+      "id": "4",
+      "avatar": "./man.png",
+      "name": "Ryan Brown Hy",
+      "company": "OmniTech Corporation",
+      "odervalue": "$541",
+      "orderdate": "10/08/2005",
+      "status": "In-progress",
+      "image": "./Pie chart.png"
+    },
+    {
+      "id": "5",
+      "avatar": "./Avatar 313.png",
+      "name": "Ryan Young He",
+      "company": "DataStream Inc",
+      "odervalue": "$769",
+      "orderdate": "16/12/2020",
+      "status": "Completed",
+      "image": "./Pie chart.png"
+    }
+  ]
+}

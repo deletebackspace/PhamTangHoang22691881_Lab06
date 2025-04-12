@@ -1,52 +1,71 @@
-import data from "../data/data.json";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "../modal/Modal";
 import DataTable from "react-data-table-component";
-import dataList from "../data/dataTable.json";
+import data from "../data/data.json";
 
 const Content = () => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); // Contains the user data when clicking UPDATE
-  const [dataTB, setDataTB] = useState(dataList);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [dataTB, setDataTB] = useState([]);
+  const [datax, setDatax] = useState([]);
 
-  // Handle opening the modal for editing a user
+  // Fetch dữ liệu từ JSON Server
+  useEffect(() => {
+    fetch("http://localhost:2000/data")
+      .then((res) => res.json())
+      .then((data) => setDatax(data))
+      .catch((err) => console.error("Fetch error:", err));
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:1881/dataTable")
+      .then((res) => res.json())
+      .then((data) => setDataTB(data))
+      .catch((err) => console.error("Fetch error:", err));
+  }, []);
+
+  console.log("Data from JSON Server:", dataTB);
   const handleEdit = (row) => {
     setSelectedUser(row);
     setShowModal(true);
   };
 
-  // Handle opening the modal for adding a new user
   const openModal = () => {
-    setSelectedUser(null); // No user selected → create new
+    setSelectedUser(null);
     setShowModal(true);
   };
 
-  // Handle closing the modal
   const closeModal = () => {
     setShowModal(false);
-    setSelectedUser(null); // Reset selectedUser to avoid stale data
+    setSelectedUser(null);
   };
 
-  // Handle adding or updating a user
-  const handleUpdateUser = (updatedUser) => {
+  const handleUpdateUser = async (updatedUser) => {
     if (!selectedUser) {
-      // Add new user with a unique id
-      const newUser = {
-        ...updatedUser,
-        id: Date.now(), // dùng timestamp để tránh trùng id
-      };
-      setDataTB((prev) => [...prev, newUser]);
+      // Add new user
+      const newUser = { ...updatedUser, id: Date.now() };
+      const response = await fetch("http://localhost:1881/dataTable", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newUser),
+      });
+      const result = await response.json();
+      setDataTB((prev) => [...prev, result]);
     } else {
-      // Update existing user by id
-      const updatedList = dataTB.map((user) =>
-        user.id === selectedUser.id ? { ...updatedUser, id: user.id } : user
+      // Update existing user
+      const response = await fetch(`http://localhost:1881/dataTable/${selectedUser.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...updatedUser, id: selectedUser.id }),
+      });
+      const result = await response.json();
+      setDataTB((prev) =>
+        prev.map((user) => (user.id === selectedUser.id ? result : user))
       );
-      setDataTB(updatedList);
     }
 
     closeModal();
   };
-
 
   const columns = [
     {
@@ -67,20 +86,18 @@ const Content = () => {
         let color = "";
         switch (row.status.toLowerCase().trim()) {
           case "new":
-            color = "#3399ff"; // Blue
+            color = "#3399ff";
             break;
           case "in-progress":
-            color = "#ffcc00"; // Orange
+            color = "#ffcc00";
             break;
           case "completed":
-            color = "#00cc66"; // Green
+            color = "#00cc66";
             break;
           default:
             color = "#000";
         }
-        return (
-          <span style={{ color, fontWeight: "500" }}>{row.status}</span>
-        );
+        return <span style={{ color, fontWeight: "500" }}>{row.status}</span>;
       },
     },
     {
@@ -106,19 +123,16 @@ const Content = () => {
       },
     },
     headCells: {
-      style: {
-        justifyContent: "center", // Center the header
-      },
+      style: { justifyContent: "center" },
     },
     cells: {
-      style: {
-        justifyContent: "center", // Center the cell content
-      },
+      style: { justifyContent: "center" },
     },
   };
 
   return (
     <div className="w-full p-5">
+      {/* Header */}
       <div className="grid grid-cols-12">
         <div className="col-span-12 flex">
           <img src="./Squares four 1.png" alt="Overview Icon" />
@@ -126,8 +140,9 @@ const Content = () => {
         </div>
       </div>
       <br />
+      {/* Overview cards */}
       <div className="grid grid-cols-12 gap-1">
-        {data.map((item, index) => (
+        {datax.map((item, index) => (
           <div key={index} className={`col-span-4 p-3 rounded flex ${item.bg}`}>
             <div className="flex-1">
               <p className="font-bold">{item.title}</p>
@@ -142,6 +157,7 @@ const Content = () => {
         ))}
       </div>
       <br />
+      {/* Table Header + Add Button */}
       <div className="grid grid-cols-12">
         <div className="col-span-2">
           <div className="flex">
@@ -158,6 +174,7 @@ const Content = () => {
           </button>
         </div>
       </div>
+      {/* Data Table */}
       <DataTable
         columns={columns}
         data={dataTB}
@@ -167,12 +184,13 @@ const Content = () => {
         customStyles={customStyles}
       />
 
+      {/* Modal */}
       {showModal && (
         <Modal
           user={selectedUser}
           onClose={closeModal}
           onUpdate={handleUpdateUser}
-          isNew={!selectedUser} // If no selectedUser, it's a new user
+          isNew={!selectedUser}
         />
       )}
     </div>
